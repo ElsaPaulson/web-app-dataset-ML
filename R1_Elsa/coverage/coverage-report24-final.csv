@@ -1,0 +1,268 @@
+Line,Code,Execution Count
+1,/* global _ */,10
+2,(function () {,15
+3,'use strict';,16
+4,,16
+5,/* jshint ignore:start */,16
+6,// Underscore's Template Module,32
+7,// Courtesy of underscorejs.org,46
+8,var _ = (function (_) {,33
+9,_.defaults = function (object) {,29
+10,if (!object) {,31
+11,return object;,32
+12,},20
+13,"for (var argsIndex = 1, argsLength = arguments.length; argsIndex < argsLength; argsIndex++) {",19
+14,var iterable = arguments[argsIndex];,30
+15,if (iterable) {,31
+16,for (var key in iterable) {,34
+17,if (object[key] == null) {,23
+18,object[key] = iterable[key];,22
+19,},20
+20,},29
+21,},44
+22,},44
+23,return object;,43
+24,};,40
+25,,40
+26,"// By default, Underscore uses ERB-style template delimiters, change the",38
+27,// following template settings to use alternative delimiters.,42
+28,_.templateSettings = {,38
+29,"evaluate    : /<%([\s\S]+?)%>/g,",26
+30,"interpolate : /<%=([\s\S]+?)%>/g,",26
+31,escape      : /<%-([\s\S]+?)%>/g,30
+32,};,27
+33,,27
+34,"// When customizing `templateSettings`, if you don't want to define an",27
+35,"// interpolation, evaluation or escaping regex, we need one that is",19
+36,// guaranteed not to match.,21
+37,var noMatch = /(.)^/;,19
+38,,34
+39,// Certain characters need to be escaped so that they can be put into a,32
+40,// string literal.,38
+41,var escapes = {,31
+42,"""'"":      ""'"",",24
+43,"'\\':     '\\',",29
+44,"'\r':     'r',",29
+45,"'\n':     'n',",29
+46,"'\t':     't',",29
+47,"'\u2028': 'u2028',",19
+48,'\u2029': 'u2029',20
+49,};,20
+50,,20
+51,var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;,20
+52,,19
+53,"// JavaScript micro-templating, similar to John Resig's implementation.",18
+54,"// Underscore templating handles arbitrary delimiters, preserves whitespace,",19
+55,// and correctly escapes quotes within interpolated code.,19
+56,"_.template = function(text, data, settings) {",19
+57,var render;,19
+58,"settings = _.defaults({}, settings, _.templateSettings);",22
+59,,19
+60,// Combine delimiters into one regular expression via alternation.,19
+61,var matcher = new RegExp([,16
+62,"(settings.escape || noMatch).source,",16
+63,"(settings.interpolate || noMatch).source,",16
+64,(settings.evaluate || noMatch).source,19
+65,"].join('|') + '|$', 'g');",19
+66,,22
+67,"// Compile the template source, escaping string literals appropriately.",22
+68,var index = 0;,22
+69,"var source = ""__p+='"";",29
+70,"text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {",28
+71,"source += text.slice(index, offset)",28
+72,".replace(escaper, function(match) { return '\\' + escapes[match]; });",28
+73,,16
+74,if (escape) {,16
+75,"source += ""'+\n((__t=("" + escape + ""))==null?'':_.escape(__t))+\n'"";",16
+76,},16
+77,if (interpolate) {,16
+78,"source += ""'+\n((__t=("" + interpolate + ""))==null?'':__t)+\n'"";",16
+79,},16
+80,if (evaluate) {,18
+81,"source += ""';\n"" + evaluate + ""\n__p+='"";",18
+82,},19
+83,index = offset + match.length;,17
+84,return match;,17
+85,});,17
+86,"source += ""';\n"";",17
+87,,17
+88,"// If a variable is not specified, place data values in local scope.",17
+89,if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';,26
+90,,36
+91,"source = ""var __t,__p='',__j=Array.prototype.join,"" +",31
+92,"""print=function(){__p+=__j.call(arguments,'');};\n"" +",41
+93,"source + ""return __p;\n"";",41
+94,,34
+95,try {,36
+96,"render = new Function(settings.variable || 'obj', '_', source);",33
+97,} catch (e) {,69
+98,e.source = source;,66
+99,throw e;,66
+100,},69
+101,,80
+102,"if (data) return render(data, _);",78
+103,var template = function(data) {,91
+104,"return render.call(this, data, _);",96
+105,};,94
+106,,97
+107,// Provide the compiled function source as a convenience for precompilation.,90
+108,template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}';,90
+109,,84
+110,return template;,80
+111,};,80
+112,,71
+113,return _;,77
+114,})({});,63
+115,,55
+116,if (location.hostname === 'todomvc.com') {,55
+117,"(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){",57
+118,"(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),",51
+119,"m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)",51
+120,"})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');",50
+121,"ga('create', 'UA-31081062-1', 'auto');",50
+122,"ga('send', 'pageview');",50
+123,},50
+124,/* jshint ignore:end */,50
+125,,50
+126,function redirect() {,51
+127,if (location.hostname === 'tastejs.github.io') {,49
+128,"location.href = location.href.replace('tastejs.github.io/todomvc', 'todomvc.com');",49
+129,},49
+130,},49
+131,,46
+132,function findRoot() {,47
+133,var base = location.href.indexOf('examples/');,47
+134,"return location.href.substr(0, base);",47
+135,},47
+136,,46
+137,"function getFile(file, callback) {",9
+138,if (!location.host) {,13
+139,return console.info('Miss the info bar? Run TodoMVC from a server to avoid a cross-origin error.');,13
+140,},13
+141,,13
+142,var xhr = new XMLHttpRequest();,9
+143,,10
+144,"xhr.open('GET', findRoot() + file, true);",10
+145,xhr.send();,10
+146,,10
+147,xhr.onload = function () {,10
+148,if (xhr.status === 200 && callback) {,9
+149,callback(xhr.responseText);,9
+150,},11
+151,};,11
+152,},12
+153,,11
+154,"function Learn(learnJSON, config) {",11
+155,if (!(this instanceof Learn)) {,9
+156,"return new Learn(learnJSON, config);",9
+157,},9
+158,,7
+159,"var template, framework;",7
+160,,7
+161,if (typeof learnJSON !== 'object') {,7
+162,try {,6
+163,learnJSON = JSON.parse(learnJSON);,7
+164,} catch (e) {,7
+165,return;,7
+166,},7
+167,},7
+168,,7
+169,if (config) {,7
+170,template = config.template;,7
+171,framework = config.framework;,7
+172,},7
+173,,7
+174,if (!template && learnJSON.templates) {,6
+175,template = learnJSON.templates.todomvc;,14
+176,},14
+177,,15
+178,if (!framework && document.querySelector('[data-framework]')) {,17
+179,framework = document.querySelector('[data-framework]').dataset.framework;,17
+180,},17
+181,,23
+182,this.template = template;,24
+183,,24
+184,if (learnJSON.backend) {,26
+185,this.frameworkJSON = learnJSON.backend;,33
+186,this.frameworkJSON.issueLabel = framework;,32
+187,this.append({,32
+188,backend: true,32
+189,});,32
+190,} else if (learnJSON[framework]) {,36
+191,this.frameworkJSON = learnJSON[framework];,35
+192,this.frameworkJSON.issueLabel = framework;,35
+193,this.append();,35
+194,},38
+195,,39
+196,this.fetchIssueCount();,39
+197,},39
+198,,41
+199,Learn.prototype.append = function (opts) {,42
+200,var aside = document.createElement('aside');,42
+201,"aside.innerHTML = _.template(this.template, this.frameworkJSON);",42
+202,aside.className = 'learn';,42
+203,,42
+204,if (opts && opts.backend) {,42
+205,// Remove demo link,43
+206,var sourceLinks = aside.querySelector('.source-links');,42
+207,var heading = sourceLinks.firstElementChild;,42
+208,var sourceLink = sourceLinks.lastElementChild;,42
+209,// Correct link path,42
+210,var href = sourceLink.getAttribute('href');,14
+211,"sourceLink.setAttribute('href', href.substr(href.lastIndexOf('http')));",6
+212,sourceLinks.innerHTML = heading.outerHTML + sourceLink.outerHTML;,6
+213,} else {,6
+214,// Localize demo links,13
+215,var demoLinks = aside.querySelectorAll('.demo-link');,13
+216,"Array.prototype.forEach.call(demoLinks, function (demoLink) {",19
+217,"if (demoLink.getAttribute('href').substr(0, 4) !== 'http') {",18
+218,"demoLink.setAttribute('href', findRoot() + demoLink.getAttribute('href'));",18
+219,},18
+220,});,18
+221,},18
+222,,18
+223,document.body.className = (document.body.className + ' learn-bar').trim();,18
+224,"document.body.insertAdjacentHTML('afterBegin', aside.outerHTML);",18
+225,};,18
+226,,11
+227,Learn.prototype.fetchIssueCount = function () {,4
+228,var issueLink = document.getElementById('issue-count-link');,4
+229,if (issueLink) {,4
+230,"var url = issueLink.href.replace('https://github.com', 'https://api.github.com/repos');",4
+231,var xhr = new XMLHttpRequest();,4
+232,"xhr.open('GET', url, true);",11
+233,xhr.onload = function (e) {,11
+234,var parsedResponse = JSON.parse(e.target.responseText);,11
+235,if (parsedResponse instanceof Array) {,11
+236,var count = parsedResponse.length;,11
+237,if (count !== 0) {,11
+238,issueLink.innerHTML = 'This app has ' + count + ' open issues';,11
+239,document.getElementById('issue-count').style.display = 'inline';,11
+240,},11
+241,},20
+242,};,14
+243,xhr.send();,11
+244,},11
+245,};,11
+246,,4
+247,redirect();,4
+248,"getFile('learn.json', Learn);",4
+249,})();,4
+250,,4
+251,"// Store a reference to the active route, allowing us to re-filter todo",3
+252,// items as they are marked complete or incomplete.,3
+253,this._activeRoute = currentPage;,3
+254,,3
+255,"if (currentPage === """")",3
+256,"this._activeRoute = ""All"";",3
+257,,3
+258,this._filter();,3
+259,,3
+260,"this.view.render(""setFilter"", currentPage);",3
+261,};,3
+262,,2
+263,// Export to window,2
+264,window.app = window.app || {};,2
+265,window.app.Controller = Controller;,2
+266,})(window);,2
+267,,1

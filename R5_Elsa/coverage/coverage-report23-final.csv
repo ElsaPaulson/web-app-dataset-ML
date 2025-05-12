@@ -1,0 +1,114 @@
+Line,Code,Execution Count
+1,"const transactions = JSON.parse(localStorage.getItem(""transactions"")) || [];",4
+2,No Code,4
+3,"const formatter = new Intl.NumberFormat(""en-US"", {",4
+4,"style: ""currency"",",4
+5,"currency: ""USD"",",6
+6,"signDisplay: ""always"",",6
+7,},6
+8,);,4
+9,No Code,4
+10,"const list = document.getElementById(""transactionList"");",3
+11,"const form = document.getElementById(""transactionForm"");",3
+12,"const statusText = document.getElementById(""status"");",3
+13,"const balance = document.getElementById(""balance"");",3
+14,"const income = document.getElementById(""income"");",3
+15,"const expense = document.getElementById(""expense"");",3
+16,No Code,3
+17,"form.addEventListener(""submit"", addTransaction);",3
+18,No Code,26
+19,function formatCurrency(value) {,30
+20,if (value === 0) {,30
+21,"return formatter.format(0).replace(/^[+-]/, """");",49
+22,},46
+23,return formatter.format(value);,46
+24,},4
+25,No Code,8
+26,function updateTotal() {,8
+27,const incomeTotal = transactions,16
+28,.filter((trx),12
+29,"=> trx.type === ""income"")",8
+30,".reduce((total, trx) => total + trx.amount, 0);",8
+31,No Code,16
+32,const expenseTotal = transactions,12
+33,".filter((trx) => trx.type === ""expense"")",8
+34,".reduce((total, trx) => total + trx.amount, 0);",8
+35,No Code,8
+36,const balanceTotal = incomeTotal - expenseTotal;,8
+37,No Code,8
+38,"balance.textContent = formatCurrency(balanceTotal).replace(/^\+/, """");",8
+39,income.textContent = formatCurrency(incomeTotal);,8
+40,expense.textContent = formatCurrency(expenseTotal * -1);,3
+41,},8
+42,No Code,8
+43,function renderList() {,8
+44,"list.innerHTML = """";",8
+45,No Code,9
+46,"statusText.textContent = """";",9
+47,if (transactions.length === 0) {,9
+48,"statusText.textContent = ""No transactions."";",13
+49,return;,12
+50,},20
+51,No Code,28
+52,"transactions.forEach(({ id, name, amount, date, type }",20
+53,) => {,20
+54,"const sign = ""income"" === type ? 1 : -1;",20
+55,No Code,20
+56,"const li = document.createElement(""li"");",20
+57,No Code,20
+58,li.innerHTML = `,20
+59,"<div class=""name"">",20
+60,<h4>${name}</h4>,20
+61,<p>${new Date(date).toLocaleDateString()}</p>,20
+62,</div>,20
+63,No Code,20
+64,"<div class=""amount ${type}"">",20
+65,<span>${formatCurrency(amount * sign)}</span>,20
+66,</div>,20
+67,No Code,20
+68,"<div class=""action"" onclick=""deleteTransaction(${id})"">",20
+69,"<svg xmlns=""http://www.w3.org/2000/svg"" fill=""none"" viewBox=""0 0 24 24"" stroke-width=""1.5"" stroke=""currentColor"">",20
+70,"<path stroke-linecap=""round"" stroke-linejoin=""round"" d=""M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"" />",20
+71,</svg>,20
+72,</div>,23
+73,`;,23
+74,No Code,15
+75,list.appendChild(li);,6
+76,});,6
+77,},6
+78,No Code,6
+79,renderList();,4
+80,updateTotal();,5
+81,No Code,4
+82,function deleteTransaction(id) {,4
+83,const index = transactions.findIndex((trx) => trx.id === id);,4
+84,"transactions.splice(index, 1);",4
+85,No Code,4
+86,updateTotal();,4
+87,saveTransactions();,3
+88,renderList();,6
+89,},6
+90,No Code,6
+91,function addTransaction(e) {,6
+92,e.preventDefault();,6
+93,No Code,6
+94,const formData = new FormData(this);,6
+95,No Code,6
+96,transactions.push({,6
+97,"id: transactions.length + 1,",6
+98,"name: formData.get(""name""),",9
+99,"amount: parseFloat(formData.get(""amount"")",6
+100,"),",6
+101,"date: new Date(formData.get(""date"")),",5
+102,"type: ""on"" === formData.get(""type"") ? ""income"" : ""expense"",",4
+103,});,4
+104,No Code,4
+105,this.reset();,4
+106,No Code,4
+107,updateTotal();,1
+108,saveTransactions();,5
+109,renderList();,11
+110,},5
+111,No Code,5
+112,function saveTransactions() {,5
+113,"transactions.sort((a, b) => new Date(b.date) - new Date(a.date));",1
