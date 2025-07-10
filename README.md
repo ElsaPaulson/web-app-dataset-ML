@@ -5,7 +5,7 @@ This repository contains the **coverage dataset** created for the SEKE 2025 rese
 > **Enhancing Automated Test Efficiency: A Hybrid Machine Learning Approach for Test Suite Reduction in Gray-Box Web Application Testing**  
 > Elsa Paulson, Renee Bryce  
 > Accepted at the 2025 International Conference on Software Engineering and Knowledge Engineering (SEKE)  
-> DOI: [10.18293/SEKE2025-123](https://doi.org/10.18293/SEKE2025-071)
+> DOI: [10.18293/SEKE2025-071](https://doi.org/10.18293/SEKE2025-071)
 
 ## 📘 Overview
 
